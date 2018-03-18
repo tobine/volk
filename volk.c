@@ -20,8 +20,6 @@ static void volkGenLoadLoader(void* context, PFN_vkVoidFunction (*load)(void*, c
 
 static void volkGenLoadInstance(void* context, PFN_vkVoidFunction (*load)(void*, const char*))
 {
-	vkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr)load(context, "vkGetDeviceProcAddr");
-
 #define VOLKGEN(name) name = (PFN_##name)load(context, #name);
 #include "volkgen_instance.h"
 #undef VOLKGEN
@@ -109,7 +107,6 @@ void volkLoadDeviceTable(struct VolkDeviceTable* table, VkDevice device)
 #endif
 
 PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
-PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
 
 #define VOLKGEN(name) PFN_##name name;
 #include "volkgen_loader.h"

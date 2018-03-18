@@ -74,7 +74,6 @@ struct VolkDeviceTable
 };
 
 extern PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
-extern PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
 
 #define VOLKGEN(name) extern PFN_##name name;
 #include "volkgen_loader.h"

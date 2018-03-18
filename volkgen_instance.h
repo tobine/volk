@@ -1,3 +1,4 @@
+/* This file is part of volk library and is automatically generated; do not modify it */
 #if defined(VK_VERSION_1_0)
 VOLKGEN(vkCreateDevice)
 VOLKGEN(vkDestroyInstance)

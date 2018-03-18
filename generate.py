@@ -32,6 +32,12 @@ def patch_file(path, blocks):
 		for line in result:
 			file.write(line)
 
+def write_file(path, lines):
+	with open(path, 'w') as file:
+		file.write('/* This file is part of volk library and is automatically generated; do not modify it */\n')
+		for line in lines:
+			file.write(line)
+
 def is_descendant_type(types, name, base):
 	if name == base:
 		return True
@@ -147,14 +153,6 @@ if __name__ == "__main__":
 	patch_file('volk.h', blocks)
 	patch_file('volk.c', blocks)
 
-	with open('volkgen_loader.h', 'w') as file:
-		for line in blocks['XMACRO_LOADER']:
-			file.write(line)
-
-	with open('volkgen_instance.h', 'w') as file:
-		for line in blocks['XMACRO_INSTANCE']:
-			file.write(line)
-
-	with open('volkgen_device.h', 'w') as file:
-		for line in blocks['XMACRO_DEVICE']:
-			file.write(line)
+	write_file('volkgen_loader.h', blocks['XMACRO_LOADER'])
+	write_file('volkgen_instance.h', blocks['XMACRO_INSTANCE'])
+	write_file('volkgen_device.h', blocks['XMACRO_DEVICE'])

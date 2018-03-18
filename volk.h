@@ -73,6 +73,9 @@ struct VolkDeviceTable
 #undef VOLKGEN
 };
 
+/**
+ * Function prototypes; each function is using a function pointer defined in volk.c
+ */
 extern PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
 
 #define VOLKGEN(name) extern PFN_##name name;

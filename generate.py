@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
 	spec = parse_xml(specpath)
 
-	block_keys = ('DEVICE_TABLE', 'PROTOTYPES_H', 'PROTOTYPES_C', 'LOAD_LOADER', 'LOAD_INSTANCE', 'LOAD_DEVICE', 'LOAD_DEVICE_TABLE')
+	block_keys = ('XMACRO_LOADER', 'XMACRO_INSTANCE', 'XMACRO_DEVICE')
 
 	blocks = {}
 
@@ -132,16 +132,11 @@ if __name__ == "__main__":
 				type = 'VkInstance'
 
 			if is_descendant_type(types, type, 'VkDevice'):
-				blocks['LOAD_DEVICE'] += '\t' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
-				blocks['DEVICE_TABLE'] += '\tPFN_' + name + ' ' + name + ';\n'
-				blocks['LOAD_DEVICE_TABLE'] += '\ttable->' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
+				blocks['XMACRO_DEVICE'] += 'VOLKGEN(' + name + ')\n'
 			elif is_descendant_type(types, type, 'VkInstance'):
-				blocks['LOAD_INSTANCE'] += '\t' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
+				blocks['XMACRO_INSTANCE'] += 'VOLKGEN(' + name + ')\n'
 			elif type != '':
-				blocks['LOAD_LOADER'] += '\t' + name + ' = (PFN_' + name + ')load(context, "' + name + '");\n'
-
-			blocks['PROTOTYPES_H'] += 'extern PFN_' + name + ' ' + name + ';\n'
-			blocks['PROTOTYPES_C'] += 'PFN_' + name + ' ' + name + ';\n'
+				blocks['XMACRO_LOADER'] += 'VOLKGEN(' + name + ')\n'
 
 		for key in block_keys:
 			if blocks[key].endswith(ifdef):
@@ -151,3 +146,15 @@ if __name__ == "__main__":
 
 	patch_file('volk.h', blocks)
 	patch_file('volk.c', blocks)
+
+	with open('volkgen_loader.h', 'w') as file:
+		for line in blocks['XMACRO_LOADER']:
+			file.write(line)
+
+	with open('volkgen_instance.h', 'w') as file:
+		for line in blocks['XMACRO_INSTANCE']:
+			file.write(line)
+
+	with open('volkgen_device.h', 'w') as file:
+		for line in blocks['XMACRO_DEVICE']:
+			file.write(line)

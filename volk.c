@@ -13,28 +13,28 @@ extern "C" {
 
 static void volkGenLoadLoader(void* context, PFN_vkVoidFunction (*load)(void*, const char*))
 {
-#define VOLKGEN(name) name = (PFN_##name)load(context, #name);
+#define VOLKGEN(name, ret, args) name = (PFN_##name)load(context, #name);
 #include "volkgen_loader.h"
 #undef VOLKGEN
 }
 
 static void volkGenLoadInstance(void* context, PFN_vkVoidFunction (*load)(void*, const char*))
 {
-#define VOLKGEN(name) name = (PFN_##name)load(context, #name);
+#define VOLKGEN(name, ret, args) name = (PFN_##name)load(context, #name);
 #include "volkgen_instance.h"
 #undef VOLKGEN
 }
 
 static void volkGenLoadDevice(void* context, PFN_vkVoidFunction (*load)(void*, const char*))
 {
-#define VOLKGEN(name) name = (PFN_##name)load(context, #name);
+#define VOLKGEN(name, ret, args) name = (PFN_##name)load(context, #name);
 #include "volkgen_device.h"
 #undef VOLKGEN
 }
 
 static void volkGenLoadDeviceTable(struct VolkDeviceTable* table, void* context, PFN_vkVoidFunction (*load)(void*, const char*))
 {
-#define VOLKGEN(name) table->name = (PFN_##name)load(context, #name);
+#define VOLKGEN(name, ret, args) table->name = (PFN_##name)load(context, #name);
 #include "volkgen_device.h"
 #undef VOLKGEN
 }
@@ -108,7 +108,7 @@ void volkLoadDeviceTable(struct VolkDeviceTable* table, VkDevice device)
 
 PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
 
-#define VOLKGEN(name) PFN_##name name;
+#define VOLKGEN(name, ret, args) PFN_##name name;
 #include "volkgen_loader.h"
 #include "volkgen_instance.h"
 #include "volkgen_device.h"

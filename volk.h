@@ -68,7 +68,7 @@ void volkLoadDeviceTable(struct VolkDeviceTable* table, VkDevice device);
  */
 struct VolkDeviceTable
 {
-#define VOLKGEN(name) PFN_##name name;
+#define VOLKGEN(name, ret, args) PFN_##name name;
 #include "volkgen_device.h"
 #undef VOLKGEN
 };
@@ -78,7 +78,7 @@ struct VolkDeviceTable
  */
 extern PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
 
-#define VOLKGEN(name) extern PFN_##name name;
+#define VOLKGEN(name, ret, args) extern ret (VKAPI_PTR* name) args;
 #include "volkgen_loader.h"
 #include "volkgen_instance.h"
 #include "volkgen_device.h"

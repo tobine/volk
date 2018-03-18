@@ -32,11 +32,10 @@ def patch_file(path, blocks):
 		for line in result:
 			file.write(line)
 
-def write_file(path, lines):
+def write_file(path, content):
 	with open(path, 'w') as file:
 		file.write('/* This file is part of volk library and is automatically generated; do not modify it */\n')
-		for line in lines:
-			file.write(line)
+		file.write(content)
 
 def is_descendant_type(types, name, base):
 	if name == base:
@@ -51,6 +50,11 @@ def is_descendant_type(types, name, base):
 
 def defined(key):
 	return 'defined(' + key + ')'
+
+def get_command_signature(cmd):
+	rettype = cmd.findtext('proto/type')
+	args = [''.join(p.itertext()) for p in cmd.findall('param')]
+	return rettype, args
 
 if __name__ == "__main__":
 	specpath = "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/master/src/spec/vk.xml"
@@ -137,12 +141,15 @@ if __name__ == "__main__":
 			if name == 'vkGetDeviceProcAddr':
 				type = 'VkInstance'
 
+			rettype, args = get_command_signature(cmd)
+			xmacro = 'VOLKGEN(' + name + ', ' + rettype + ', (' + ', '.join(args) + '))\n'
+
 			if is_descendant_type(types, type, 'VkDevice'):
-				blocks['XMACRO_DEVICE'] += 'VOLKGEN(' + name + ')\n'
+				blocks['XMACRO_DEVICE'] += xmacro
 			elif is_descendant_type(types, type, 'VkInstance'):
-				blocks['XMACRO_INSTANCE'] += 'VOLKGEN(' + name + ')\n'
+				blocks['XMACRO_INSTANCE'] += xmacro
 			elif type != '':
-				blocks['XMACRO_LOADER'] += 'VOLKGEN(' + name + ')\n'
+				blocks['XMACRO_LOADER'] += xmacro
 
 		for key in block_keys:
 			if blocks[key].endswith(ifdef):
